@@ -1,43 +1,310 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>私のルーナ | Official Site</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: #0b0b10;
-      color: #f5f0ed;
-      font-family: sans-serif;
-      display: grid;
-      place-items: center;
-      text-align: center;
-    }
-    main { padding: 32px; }
-    h1 {
-      font-size: clamp(40px, 9vw, 80px);
-      letter-spacing: 0.12em;
-      font-weight: 400;
-    }
-    p { color: #aaa; letter-spacing: 0.2em; }
-    .thread {
-      width: 80px;
-      height: 2px;
-      margin: 40px auto;
-      background: #b22d38;
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>私のルーナ</title>
+<meta name="description" content="短編アニメーション『私のルーナ』 COMING SOON">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Yomogi&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Zen+Old+Mincho:wght@500;700;900&display=swap">
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+/* Layout: a sticky "turn-around" screen opens the page (scroll = Luna turns to camera),
+   then the film's world on cotton paper, a letterboxed cinema screen, the cast as sewn-on swatches. */
+:root {
+  --cotton: #f8f1ee;      /* page paper: Luna's dress fabric */
+  --card: #fffdfb;        /* swatch cards stay light in both themes (art is on white) */
+  --card-ink: #1d2136;
+  --ink: #1d2136;         /* Luna's navy felt */
+  --ink-soft: #565a72;
+  --stitch: #e27a9c;      /* pink running stitch */
+  --thread: #c8141e;      /* the red thread of the title */
+  --screen: #12152a;      /* cinema dark */
+  --screen-fg: #f4ece7;
+  --rule: #e6d6d6;
+
+  --f-display: "Zen Old Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --f-body: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
+  --f-hand: "Yomogi", "Zen Kaku Gothic New", "Yu Gothic", sans-serif;
+
+  --step-0: 1rem;
+  --step-1: 1.25rem;
+  --step-2: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
+  --step-3: clamp(2rem, 1.4rem + 2.6vw, 3.4rem);
+  --gutter-l: max(16px, env(safe-area-inset-left, 0px));
+  --gutter-r: max(16px, env(safe-area-inset-right, 0px));
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --cotton: #171a2c; --ink: #f1e8e6; --ink-soft: #b7b4c6; --stitch: #f09ab5;
+    --thread: #ff5a5f; --screen: #0c0e1c; --rule: #2c3048; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --cotton: #171a2c; --ink: #f1e8e6; --ink-soft: #b7b4c6; --stitch: #f09ab5;
+  --thread: #ff5a5f; --screen: #0c0e1c; --rule: #2c3048; color-scheme: dark;
+}
+
+body { background: var(--cotton); color: var(--ink); font-family: var(--f-body); font-size: var(--step-0); line-height: 1.85; }
+img { display: block; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-left: var(--gutter-l); padding-right: var(--gutter-r); }
+h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; line-height: 1.35; }
+p { margin: 0; }
+.eyebrow { font-family: var(--f-hand); color: var(--stitch); font-size: var(--step-1); letter-spacing: .08em; }
+.stitch-rule { height: 0; border-top: 2px dashed var(--stitch); opacity: .7; }
+
+/* ───── 1. turn-around screen ───── */
+.turn { position: relative; height: 330vh; background: var(--screen); }
+.stage { position: sticky; top: env(safe-area-inset-top, 0px); height: 100vh; height: 100svh; overflow: hidden; background: var(--screen); }
+.stage .shot { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0%; will-change: opacity, transform, filter; transform-origin: 52% 30%; }
+.stage .smile { opacity: 0; }
+.stage .veil { position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(to top, rgb(12 14 28 / .72), rgb(12 14 28 / 0) 38%); }
+
+.label { position: absolute; top: clamp(16px, 4vh, 40px); left: calc(var(--gutter-l) + 1vw); width: min(36vw, 500px);
+  background: rgb(255 253 251 / .5); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  color: var(--card-ink); padding: 18px 22px 14px; transform: rotate(-1.6deg);
+  box-shadow: 0 8px 26px rgb(0 0 0 / .14); border-radius: 3px; }
+.label img { filter: drop-shadow(0 0 3px rgb(255 255 255 / .9)) drop-shadow(0 0 10px rgb(255 255 255 / .6)); }
+.label .soon b, .label .soon span { text-shadow: 0 0 6px rgb(255 255 255 / .8); }
+.label::before { content: ""; position: absolute; inset: 7px; border: 2px dashed var(--stitch); border-radius: 2px; pointer-events: none; }
+.label img { width: 100%; height: auto; aspect-ratio: 1200 / 216; }
+.label .soon { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 14px; margin-top: 6px; padding-inline: 4px; }
+.label .soon b { font-family: var(--f-display); font-weight: 900; letter-spacing: .32em; font-size: clamp(.95rem, .7rem + .9vw, 1.35rem); }
+.label .soon span { font-family: var(--f-hand); font-size: clamp(.9rem, .8rem + .4vw, 1.1rem); color: #7a3f56; }
+.label h1 { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+.subtitle { position: absolute; left: 50%; bottom: clamp(56px, 9vh, 96px); transform: translateX(-50%);
+  font-family: var(--f-body); font-weight: 700; color: #fff; font-size: clamp(1.3rem, 1rem + 1.4vw, 2.1rem); letter-spacing: .06em;
+  text-shadow: 0 0 2px #000, 0 0 2px #000, 0 2px 8px rgb(0 0 0 / .7); opacity: 0; white-space: nowrap; }
+.cue { position: absolute; left: 50%; bottom: max(18px, env(safe-area-inset-bottom, 0px)); transform: translateX(-50%);
+  display: grid; justify-items: center; gap: 6px; color: #fff; font-family: var(--f-hand); font-size: .95rem; letter-spacing: .1em; text-shadow: 0 1px 6px rgb(0 0 0 / .6); white-space: nowrap; }
+.cue i { width: 2px; height: 44px; background: repeating-linear-gradient(to bottom, #f6a9c0 0 6px, transparent 6px 11px); animation: sew 1.4s linear infinite; }
+@keyframes sew { to { background-position: 0 11px; } }
+
+@media (max-width: 700px) {
+  .stage .shot { object-position: 52% 0%; }
+  .label { top: auto; bottom: 104px; left: 50%; width: min(86vw, 420px); transform: translateX(-50%) rotate(-1.6deg); padding: 14px 16px 10px; background: rgb(255 253 251 / .62); }
+  .subtitle { bottom: auto; top: 46%; }
+  .stage .veil { background: linear-gradient(to top, rgb(12 14 28 / .78), rgb(12 14 28 / 0) 45%); }
+}
+
+/* ───── 2. world ───── */
+.world { padding-block: clamp(64px, 10vw, 128px); }
+.world .grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(32px, 6vw, 80px); align-items: start; }
+.world h2 { font-size: var(--step-3); font-weight: 900; margin-top: 10px; }
+.world h2 em { font-style: normal; color: var(--thread); }
+.world .bubble { width: min(300px, 70%); height: auto; margin-top: 32px; transform: rotate(-3deg); }
+.world .thread { display: block; width: 100%; height: 60px; margin-top: -6px; }
+.world .thread path { fill: none; stroke: var(--thread); stroke-width: 2.2; stroke-linecap: round; }
+.world .body { display: grid; gap: 1.2em; max-width: 34em; padding-top: 8px; }
+.world .body p { color: var(--ink); }
+.world .body .ask { font-family: var(--f-display); font-weight: 700; font-size: var(--step-2); line-height: 1.5; text-wrap: balance; }
+.world .body .note { color: var(--ink-soft); font-size: .94rem; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; padding: 0; list-style: none; }
+.facts li { border: 1.5px dashed var(--stitch); border-radius: 999px; padding: 2px 14px; font-size: .9rem; color: var(--ink); }
+
+/* ───── 3. cinema screen ───── */
+.cinema { position: relative; background: var(--screen); }
+.cinema .stage2 { display: grid; place-items: center; gap: 18px; padding-block: clamp(48px, 8vw, 96px); padding-left: var(--gutter-l); padding-right: var(--gutter-r); }
+.cinema .frame { position: relative; width: min(100%, calc((100svh - 140px) * 16 / 9)); aspect-ratio: 16 / 9; max-width: 100%; overflow: hidden; background: #000; }
+.cinema .frame video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #000; }
+.cinema .cap { color: var(--screen-fg); font-family: var(--f-display); font-size: var(--step-1); letter-spacing: .12em; text-align: center; opacity: .85; }
+.cinema .cap small { display: block; font-family: var(--f-hand); color: #f09ab5; font-size: .95rem; letter-spacing: .1em; }
+
+/* ───── 4. cast ───── */
+.cast { padding-block: clamp(64px, 10vw, 120px) clamp(40px, 6vw, 72px); }
+.cast header { display: grid; gap: 6px; margin-bottom: 36px; }
+.cast h2 { font-size: var(--step-2); font-weight: 700; }
+.cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(14px, 2vw, 24px); }
+.card { position: relative; background: var(--card); color: var(--card-ink); border-radius: 4px; padding: 14px 14px 18px; display: grid; grid-template-rows: auto auto 1fr; gap: 8px; box-shadow: 0 1px 0 rgb(0 0 0 / .05), 0 8px 24px rgb(29 33 54 / .08); }
+.card::before { content: ""; position: absolute; inset: 6px; border: 1.5px dashed var(--stitch); border-radius: 3px; pointer-events: none; opacity: .8; }
+.card figure { margin: 0; aspect-ratio: 3 / 4; position: relative; overflow: hidden; }
+.card figure img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: 50% 100%;transition: transform .5s cubic-bezier(.3,1.4,.5,1); transform-origin: 50% 100%; }
+.card:hover figure img { transform: translateY(-4px) rotate(-1.2deg); }
+.card h3 { font-size: 1.3rem; font-weight: 700; padding-inline: 6px; display: flex; align-items: baseline; gap: 10px; }
+.card h3 span { font-family: var(--f-hand); font-weight: 400; font-size: .85rem; color: #b0577a; }
+.card p { font-size: .9rem; line-height: 1.75; padding-inline: 6px; color: #3d4158; }
+
+/* ───── 5. coming soon ───── */
+.finale { background: var(--card); color: var(--card-ink); padding-block: clamp(72px, 12vw, 140px) 40px; text-align: center; position: relative; overflow: hidden; }
+.finale::before { content: ""; position: absolute; inset: 12px; border: 2px dashed var(--stitch); pointer-events: none; }
+.finale .logo { width: min(640px, 92%); height: auto; margin: 0 auto; aspect-ratio: 1200 / 216; }
+.finale .big { font-family: var(--f-display); font-weight: 900; letter-spacing: .4em; font-size: clamp(1.5rem, 1rem + 3vw, 3rem); margin-top: 28px; padding-left: .4em; }
+.finale .when { font-family: var(--f-hand); font-size: var(--step-1); color: #b0577a; margin-top: 4px; }
+.finale dl { display: grid; grid-template-columns: auto auto; justify-content: center; gap: 4px 18px; margin: 48px auto 0; font-size: .92rem; text-align: left; }
+.finale dt { color: #6b6f86; }
+.finale dd { margin: 0; }
+.finale small { display: block; margin-top: 56px; color: #6b6f86; font-size: .8rem; letter-spacing: .08em; }
+
+@media (max-width: 860px) {
+  .world .grid { grid-template-columns: minmax(0, 1fr); }
+  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+:focus-visible { outline: 2px solid var(--thread); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) {
+  .cue i { animation: none; }
+  .card figure img { transition: none; }
+}
+</style>
 </head>
 <body>
-  <main>
-    <p>ANIMATED SHORT FILM</p>
-    <h1>私のルーナ</h1>
-    <div class="thread"></div>
-    <p>COMING SOON</p>
-  </main>
+
+<!-- 1. 振り返り -->
+<section class="turn" id="top" data-scrub="turn" aria-label="タイトル">
+  <div class="stage">
+    <img class="shot back" src="assets/turn-back.webp" alt="夕方の土手道を歩く、黒猫のお人形ルーナの後ろ姿" width="1920" height="1140">
+    <img class="shot smile" src="assets/turn-smile.webp" alt="振り返って笑うルーナ" width="1920" height="1140">
+    <div class="veil"></div>
+
+    <div class="label">
+      <h1>私のルーナ</h1>
+      <picture>
+        <source media="(prefers-reduced-motion: reduce)" srcset="assets/title.webp">
+        <img class="title-draw" src="assets/title-draw.webp" alt="私のルーナ" width="1200" height="216">
+      </picture>
+      <div class="soon"><b>COMING SOON</b><span>近日公開</span></div>
+    </div>
+
+    <p class="subtitle" aria-hidden="true">うん！</p>
+    <div class="cue" aria-hidden="true">スクロールすると、ふりかえります<i></i></div>
+  </div>
+</section>
+
+<!-- 2. 世界 -->
+<section class="world">
+  <div class="wrap grid">
+    <div>
+      <div class="eyebrow">この町の、ひとつだけのきまり</div>
+      <h2>その言葉は、<br><em>糸</em>になる。</h2>
+      <img class="bubble" src="assets/bubble-kowai.webp" alt="手描きの吹き出し「怖い」" width="460" height="184">
+      <svg class="thread" viewBox="0 0 400 60" preserveAspectRatio="none" aria-hidden="true"><path d="M70 2 C 90 30, 150 54, 230 40 S 360 18, 398 46"/></svg>
+    </div>
+    <div class="body">
+      <p class="ask">ルーナに向けた、<br>その言葉は、なんですか。</p>
+      <p>言葉は糸になって、ルーナに縫い付いていく。</p>
+      <p>黒猫のお人形ルーナと、うさぎのお人形イオリ。写真の町を歩く、手描きの二人の短いお話です。</p>
+      <ul class="facts" aria-label="作品データ">
+        <li>短編アニメーション</li>
+        <li>約15分</li>
+        <li>写真の背景 × 手描きのキャラクター</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 3. スクリーン -->
+<section class="cinema" id="trailer" aria-label="予告編">
+  <div class="stage2">
+    <div class="frame">
+      <video src="assets/trailer.mp4" poster="assets/trailer-poster.webp" controls playsinline preload="metadata" width="1920" height="1080"></video>
+    </div>
+    <p class="cap">予告編<small>34秒</small></p>
+  </div>
+</section>
+
+<!-- 4. 登場人物 -->
+<section class="cast">
+  <div class="wrap">
+    <header>
+      <div class="eyebrow">とうじょうじんぶつ</div>
+      <h2>登場するお人形たち</h2>
+    </header>
+    <div class="cards">
+      <article class="card">
+        <figure><img src="assets/ch-luna.webp" alt="ルーナの設定画（正面）" width="640" height="960" loading="lazy"></figure>
+        <h3>ルーナ<span>黒猫</span></h3>
+        <p>ピンクの縫い目の、黒猫の元気なお人形。</p>
+      </article>
+      <article class="card">
+        <figure><img src="assets/ch-iori.webp" alt="イオリの設定画（正面）" width="640" height="960" loading="lazy"></figure>
+        <h3>イオリ<span>うさぎ</span></h3>
+        <p>ルーナの親友の、うさぎのお人形。</p>
+      </article>
+      <article class="card">
+        <figure><img src="assets/ch-friends.webp" alt="友人たち三人の設定画" width="700" height="875" loading="lazy"></figure>
+        <h3>友人たち<span>三人</span></h3>
+        <p>同じクラスの三人。</p>
+      </article>
+      <article class="card">
+        <figure><img src="assets/ch-kuma.webp" alt="クマのお人形の設定画（正面）" width="640" height="768" loading="lazy"></figure>
+        <h3>クマさん<span>くま</span></h3>
+        <p>ルーナの知り合いの、クマのお人形。</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- 6. 公開 -->
+<footer class="finale">
+  <div class="wrap">
+    <img class="logo" src="assets/title.webp" alt="私のルーナ" width="1200" height="216" loading="lazy">
+    <p class="big">COMING SOON</p>
+    <p class="when">公開日は、近日お知らせします</p>
+    <dl>
+      <dt>作品</dt><dd>短編アニメーション『私のルーナ』</dd>
+      <dt>監督・脚本</dt><dd>かえ</dd>
+    </dl>
+    <small>© 2026 私のルーナ</small>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
+
+  const turn = document.querySelector('[data-scrub="turn"]');
+  const back = turn.querySelector('.back');
+  const smile = turn.querySelector('.smile');
+  const sub = turn.querySelector('.subtitle');
+  const cue = turn.querySelector('.cue');
+
+  const progress = (el) => {
+    const r = el.getBoundingClientRect();
+    const span = r.height - innerHeight;
+    return span > 0 ? clamp(-r.top / span) : 0;
+  };
+
+  function draw() {
+    // Luna turns around between 30% and 58% of the first screen's scroll
+    const p = progress(turn);
+    const t = smooth(0.30, 0.58, p);
+    back.style.opacity = 1 - t;
+    smile.style.opacity = t;
+    if (!reduce) {
+      back.style.transform = `scale(${1.05 - 0.03 * smooth(0, 0.3, p)}) translateX(${-1.6 * t}%)`;
+      back.style.filter = `blur(${(t * 7).toFixed(2)}px)`;
+      smile.style.transform = `scale(${1.06 - 0.06 * t}) translateX(${2 * (1 - t)}%)`;
+      smile.style.filter = `blur(${((1 - t) * 7).toFixed(2)}px)`;
+    }
+    sub.style.opacity = smooth(0.64, 0.72, p) * (1 - smooth(0.93, 1, p));
+    cue.style.opacity = 1 - smooth(0.02, 0.12, p);
+  }
+
+  // the thread finishes writing the title in about 4 s; then hold the finished logo
+  const titleImg = document.querySelector('.title-draw');
+  const holdTitle = () => setTimeout(() => {
+    const still = new Image();
+    still.onload = () => {
+      titleImg.closest('picture').querySelectorAll('source').forEach(s => s.remove());
+      titleImg.src = still.src;
+    };
+    still.src = 'assets/title.webp';
+  }, 4300);
+  if (titleImg.complete) holdTitle(); else titleImg.addEventListener('load', holdTitle, { once: true });
+
+  let queued = false;
+  const onScroll = () => { if (!queued) { queued = true; requestAnimationFrame(() => { queued = false; draw(); }); } };
+  addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('resize', onScroll);
+  draw();
+})();
+</script>
 </body>
 </html>
